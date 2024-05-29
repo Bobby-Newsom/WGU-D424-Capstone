@@ -1,26 +1,29 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule} from '@angular/common/http';
-import {HashLocationStrategy, LocationStrategy} from "@angular/common";
+import { RouterModule } from '@angular/router';
+import { AppRoutingModule } from './app-routing.module';  // Import the routing module
 
-
+import { AppComponent } from './app.component';
+import { LivePresentationComponent } from './live-presentation/live-presentation.component';
+import { LivePresentationService } from './services/live-presentation.service';
+import {RouterOutlet} from "@angular/router";
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LivePresentationComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    RouterOutlet
   ],
-  providers: [],
+  providers: [LivePresentationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

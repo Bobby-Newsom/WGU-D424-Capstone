@@ -23,8 +23,6 @@ public class LivePresentation {
     @Column(name = "presenter", length = 100)
     private String presenter;
 
-    @Column(name = "is_live")
-    private boolean isLive;
 
     public Long getId() {
         return id;
@@ -66,13 +64,7 @@ public class LivePresentation {
         this.presenter = presenter;
     }
 
-    public boolean isLive() {
-        return isLive;
-    }
 
-    public void setLive(boolean live) {
-        isLive = live;
-    }
 
     @Override
     public String toString() {
@@ -82,7 +74,7 @@ public class LivePresentation {
                 ", description='" + description + '\'' +
                 ", dateTime=" + dateTime +
                 ", presenter='" + presenter + '\'' +
-                ", isLive=" + isLive +
+
                 '}';
     }
 }

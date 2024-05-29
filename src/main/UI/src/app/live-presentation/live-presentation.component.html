@@ -1,0 +1,31 @@
+<div>
+    <form [formGroup]="searchForm" (ngSubmit)="searchLivePresentations()">
+        <input formControlName="query" placeholder="Search presentations...">
+        <button type="submit">Search</button>
+    </form>
+
+    <form [formGroup]="createForm" (ngSubmit)="createLivePresentation()">
+        <input formControlName="title" placeholder="Title">
+        <input formControlName="description" placeholder="Description">
+        <input formControlName="dateTime" type="datetime-local" placeholder="Date and Time">
+        <input formControlName="presenter" placeholder="Presenter">
+        <button type="submit">Create Presentation</button>
+    </form>
+
+    <form *ngIf="selectedPresentation" [formGroup]="updateForm" (ngSubmit)="updateLivePresentation()">
+        <input formControlName="title" placeholder="Title">
+        <input formControlName="description" placeholder="Description">
+        <input formControlName="dateTime" type="datetime-local" placeholder="Date and Time">
+        <input formControlName="presenter" placeholder="Presenter">
+        <button type="submit">Update Presentation</button>
+    </form>
+
+    <p>Search Timestamp: {{ timestamp }}</p>
+    <ul>
+        <li *ngFor="let presentation of results">
+            {{ presentation.title }} by {{ presentation.presenter }} at {{ presentation.dateTime | date:'medium' }}
+            <button (click)="selectPresentation(presentation)">Edit</button>
+            <button (click)="deleteLivePresentation(presentation.id)">Delete</button>
+        </li>
+    </ul>
+</div>
