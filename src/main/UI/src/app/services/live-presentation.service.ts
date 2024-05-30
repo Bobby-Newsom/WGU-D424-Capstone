@@ -7,8 +7,7 @@ import { LivePresentation } from '../models/live-presentation.model';
   providedIn: 'root'
 })
 export class LivePresentationService {
-
-  private apiUrl = '/api/live-presentations';
+  private apiUrl = 'http://localhost:8080/api/live-presentations';
 
   constructor(private http: HttpClient) {}
 

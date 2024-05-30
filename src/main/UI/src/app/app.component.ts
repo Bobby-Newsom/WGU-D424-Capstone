@@ -1,154 +1,183 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
-import {HttpClient, HttpResponse,HttpHeaders} from "@angular/common/http";
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {map} from "rxjs/operators";
-
-
-
-
+import { LivePresentationService } from './services/live-presentation.service';
+import { LivePresentation } from './models/live-presentation.model';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
+  englishMessage$!: Observable<string>;
+  frenchMessage$!: Observable<string>;
+  presentationAnnouncement$!: Observable<string>;
+  timestamp!: string;
+  results: LivePresentation[] = [];
+  selectedPresentation: LivePresentation | null = null;
 
-  englishMessage$!: Observable<string>
-  frenchMessage$!: Observable<string>
+  searchForm: FormGroup = new FormGroup({
+    query: new FormControl('', Validators.required)
+  });
 
-  presentationAnnouncement$!: Observable<string>
+  createForm: FormGroup = new FormGroup({
+    title: new FormControl('', Validators.required),
+    description: new FormControl('', [Validators.required, Validators.maxLength(500)]),
+    dateTime: new FormControl('', Validators.required),
+    presenter: new FormControl('', Validators.required)
+  });
 
+  updateForm: FormGroup = new FormGroup({
+    title: new FormControl('', Validators.required),
+    description: new FormControl('', [Validators.required, Validators.maxLength(500)]),
+    dateTime: new FormControl('', Validators.required),
+    presenter: new FormControl('', Validators.required)
+  });
 
-  constructor(private httpClient:HttpClient){}
+  constructor(private httpClient: HttpClient, private livePresentationService: LivePresentationService) {}
 
-  private baseURL:string='http://localhost:8080';
+  private baseURL: string = 'http://localhost:8080';
+  private getUrl: string = this.baseURL + '/room/reservation/v1/';
+  private postUrl: string = this.baseURL + '/room/reservation/v1';
+  public submitted!: boolean;
+  roomsearch!: FormGroup;
+  rooms!: Room[];
+  request!: ReserveRoomRequest;
+  currentCheckInVal!: string;
+  currentCheckOutVal!: string;
 
-  private getUrl:string = this.baseURL + '/room/reservation/v1/';
-  private postUrl:string = this.baseURL + '/room/reservation/v1';
-  public submitted!:boolean;
-  roomsearch! : FormGroup;
-  rooms! : Room[];
-  request!:ReserveRoomRequest;
-  currentCheckInVal!:string;
-  currentCheckOutVal!:string;
+  ngOnInit() {
+    this.englishMessage$ = this.httpClient.get(this.baseURL + '/api/welcome/en/', { responseType: 'text' });
+    this.frenchMessage$ = this.httpClient.get(this.baseURL + '/api/welcome/fr/', { responseType: 'text' });
+    this.presentationAnnouncement$ = this.httpClient.get(this.baseURL + '/api/presentation/', { responseType: 'text' });
 
-    ngOnInit(){
-      this.englishMessage$ = this.httpClient.get(this.baseURL + '/api/welcome/en/',{responseType: 'text'})
-      this.frenchMessage$ = this.httpClient.get(this.baseURL + '/api/welcome/fr/',{responseType: 'text'})
-
-      this.presentationAnnouncement$ = this.httpClient.get(this.baseURL + '/api/presentation/', {responseType: 'text'})
-
-
-
-      this.roomsearch= new FormGroup({
-        checkin: new FormControl(' '),
-        checkout: new FormControl(' ')
-      });
-
- //     this.rooms=ROOMS;
-
+    this.roomsearch = new FormGroup({
+      checkin: new FormControl(' '),
+      checkout: new FormControl(' ')
+    });
 
     const roomsearchValueChanges$ = this.roomsearch.valueChanges;
-
-    // subscribe to the stream
     roomsearchValueChanges$.subscribe(x => {
       this.currentCheckInVal = x.checkin;
       this.currentCheckOutVal = x.checkout;
     });
   }
 
-    onSubmit({value,valid}:{value:Roomsearch,valid:boolean}){
-      this.getAll().subscribe(
+  onSubmit({ value, valid }: { value: Roomsearch; valid: boolean }) {
+    this.getAll().subscribe(rooms => {
+      this.rooms = rooms;
+    });
+  }
 
-        rooms => {console.log(Object.values(rooms)[0]);this.rooms=<Room[]>Object.values(rooms)[0]; }
+  reserveRoom(value: string) {
+    this.request = new ReserveRoomRequest(value, this.currentCheckInVal, this.currentCheckOutVal);
+    this.createReservation(this.request);
+  }
 
+  createReservation(body: ReserveRoomRequest) {
+    const options = {
+      headers: new HttpHeaders().append('Content-Type', 'application/json')
+    };
 
+    this.httpClient.post(this.postUrl, body, options).subscribe(res => console.log(res));
+  }
+
+  getAll(): Observable<Room[]> {
+    return this.httpClient.get<Room[]>(this.baseURL + '/room/reservation/v1?checkin=' + this.currentCheckInVal + '&checkout=' + this.currentCheckOutVal);
+  }
+
+  searchLivePresentations() {
+    if (this.searchForm.valid) {
+      this.livePresentationService.searchLivePresentations(this.searchForm.value.query).subscribe(
+        (results: LivePresentation[]) => {
+          this.results = results;
+          this.timestamp = new Date().toISOString();
+        },
+        (error) => {
+          console.error('Error searching live presentations', error);
+        }
       );
     }
-    reserveRoom(value:string){
-      this.request = new ReserveRoomRequest(value, this.currentCheckInVal, this.currentCheckOutVal);
-
-      this.createReservation(this.request);
-    }
-    createReservation(body:ReserveRoomRequest) {
-      let bodyString = JSON.stringify(body); // Stringify payload
-      let headers = new Headers({'Content-Type': 'application/json'}); // ... Set content type to JSON
-     // let options = new RequestOptions({headers: headers}); // Create a request option
-
-     const options = {
-      headers: new HttpHeaders().append('key', 'value'),
-
-    }
-
-      this.httpClient.post(this.postUrl, body, options)
-        .subscribe(res => console.log(res));
-    }
-
-  /*mapRoom(response:HttpResponse<any>): Room[]{
-    return response.body;
-  }*/
-
-    getAll(): Observable<any> {
-
-
-       return this.httpClient.get(this.baseURL + '/room/reservation/v1?checkin='+ this.currentCheckInVal + '&checkout='+this.currentCheckOutVal, {responseType: 'json'});
-    }
-
   }
 
-
-
-export interface Roomsearch{
-    checkin:string;
-    checkout:string;
+  createLivePresentation() {
+    if (this.createForm.valid) {
+      const newPresentation = this.createForm.value;
+      this.livePresentationService.createLivePresentation(newPresentation).subscribe(
+        (presentation: LivePresentation) => {
+          this.results.push(presentation);
+          this.createForm.reset();
+        },
+        (error) => {
+          console.error('Error creating live presentation', error);
+        }
+      );
+    }
   }
 
+  updateLivePresentation() {
+    if (this.updateForm.valid && this.selectedPresentation) {
+      const updatedPresentation = this.updateForm.value;
+      this.livePresentationService.updateLivePresentation(this.selectedPresentation.id, updatedPresentation).subscribe(
+        (presentation: LivePresentation) => {
+          const index = this.results.findIndex(p => p.id === this.selectedPresentation!.id);
+          if (index !== -1) {
+            this.results[index] = presentation;
+          }
+          this.selectedPresentation = null;
+          this.updateForm.reset();
+        },
+        (error) => {
+          console.error('Error updating live presentation', error);
+        }
+      );
+    }
+  }
 
+  deleteLivePresentation(id: number) {
+    this.livePresentationService.deleteLivePresentation(id).subscribe(
+      () => {
+        this.results = this.results.filter(p => p.id !== id);
+      },
+      (error) => {
+        console.error('Error deleting live presentation', error);
+      }
+    );
+  }
 
-
-export interface Room{
-  id:string;
-  roomNumber:string;
-  price:string;
-  links:string;
-
+  selectPresentation(presentation: LivePresentation) {
+    this.selectedPresentation = presentation;
+    this.updateForm.setValue({
+      title: presentation.title,
+      description: presentation.description,
+      dateTime: presentation.dateTime,
+      presenter: presentation.presenter
+    });
+  }
 }
+
+export interface Roomsearch {
+  checkin: string;
+  checkout: string;
+}
+
+export interface Room {
+  id: string;
+  roomNumber: string;
+  price: string;
+  links: string;
+}
+
 export class ReserveRoomRequest {
-  roomId:string;
-  checkin:string;
-  checkout:string;
+  roomId: string;
+  checkin: string;
+  checkout: string;
 
-  constructor(roomId:string,
-              checkin:string,
-              checkout:string) {
-
+  constructor(roomId: string, checkin: string, checkout: string) {
     this.roomId = roomId;
     this.checkin = checkin;
     this.checkout = checkout;
   }
 }
-
-/*
-var ROOMS: Room[]=[
-  {
-  "id": "13932123",
-  "roomNumber" : "409",
-  "price" :"20",
-  "links" : ""
-},
-{
-  "id": "139324444",
-  "roomNumber" : "509",
-  "price" :"30",
-  "links" : ""
-},
-{
-  "id": "139324888",
-  "roomNumber" : "609",
-  "price" :"40",
-  "links" : ""
-}
-] */
-
