@@ -40,7 +40,7 @@
       <form [formGroup]="searchForm" (ngSubmit)="searchLivePresentations()">
         <input formControlName="query" placeholder="Search presentations...">
         <button type="submit">Search</button>
-        <div *ngIf="searchForm.controls['query'].errors?.['required']" class="text-danger">
+        <div *ngIf="searchForm.controls['query'].touched && searchForm.controls['query'].errors?.['required']" class="text-danger">
           Search query is required.
         </div>
         <div *ngIf="results && results.length > 0" class="report-section">
@@ -58,19 +58,19 @@
       <h2 class="section-heading">Create New Live Presentation</h2>
       <form [formGroup]="createForm" (ngSubmit)="createLivePresentation()">
         <input formControlName="title" placeholder="Title">
-        <div *ngIf="createForm.controls['title'].errors?.['required']" class="text-danger">
+        <div *ngIf="createForm.controls['title'].touched && createForm.controls['title'].errors?.['required']" class="text-danger">
           Title is required.
         </div>
         <input formControlName="description" placeholder="Description">
-        <div *ngIf="createForm.controls['description'].errors?.['maxlength']" class="text-danger">
+        <div *ngIf="createForm.controls['description'].touched && createForm.controls['description'].errors?.['maxlength']" class="text-danger">
           Description must be less than 500 characters.
         </div>
         <input formControlName="dateTime" type="datetime-local" placeholder="Date and Time">
-        <div *ngIf="createForm.controls['dateTime'].errors?.['required']" class="text-danger">
+        <div *ngIf="createForm.controls['dateTime'].touched && createForm.controls['dateTime'].errors?.['required']" class="text-danger">
           Date and Time are required.
         </div>
         <input formControlName="presenter" placeholder="Presenter">
-        <div *ngIf="createForm.controls['presenter'].errors?.['required']" class="text-danger">
+        <div *ngIf="createForm.controls['presenter'].touched && createForm.controls['presenter'].errors?.['required']" class="text-danger">
           Presenter is required.
         </div>
         <button type="submit">Create Presentation</button>
@@ -78,25 +78,26 @@
 
       <form *ngIf="selectedPresentation" [formGroup]="updateForm" (ngSubmit)="updateLivePresentation()">
         <input formControlName="title" placeholder="Title">
-        <div *ngIf="updateForm.controls['title'].errors?.['required']" class="text-danger">
+        <div *ngIf="updateForm.controls['title'].touched && updateForm.controls['title'].errors?.['required']" class="text-danger">
           Title is required.
         </div>
         <input formControlName="description" placeholder="Description">
-        <div *ngIf="updateForm.controls['description'].errors?.['maxlength']" class="text-danger">
+        <div *ngIf="updateForm.controls['description'].touched && updateForm.controls['description'].errors?.['maxlength']" class="text-danger">
           Description must be less than 500 characters.
         </div>
         <input formControlName="dateTime" type="datetime-local" placeholder="Date and Time">
-        <div *ngIf="updateForm.controls['dateTime'].errors?.['required']" class="text-danger">
+        <div *ngIf="updateForm.controls['dateTime'].touched && updateForm.controls['dateTime'].errors?.['required']" class="text-danger">
           Date and Time are required.
         </div>
         <input formControlName="presenter" placeholder="Presenter">
-        <div *ngIf="updateForm.controls['presenter'].errors?.['required']" class="text-danger">
+        <div *ngIf="updateForm.controls['presenter'].touched && updateForm.controls['presenter'].errors?.['required']" class="text-danger">
           Presenter is required.
         </div>
         <button type="submit" [disabled]="updateForm.invalid">Update Presentation</button>
       </form>
 
       <br>
+
 
 
 

@@ -89,18 +89,21 @@ export class AppComponent implements OnInit {
   }
 
   searchLivePresentations() {
-    if (this.searchForm.valid) {
-      this.livePresentationService.searchLivePresentations(this.searchForm.value.query).subscribe(
-        (results: LivePresentation[]) => {
-          this.results = results;
-          this.timestamp = new Date().toISOString();
-        },
-        (error) => {
-          console.error('Error searching live presentations', error);
-        }
-      );
+    if (this.searchForm.invalid) {
+      return;
     }
+    const query = this.searchForm.get('query')?.value;
+    this.livePresentationService.searchLivePresentations(query).subscribe(
+      (response) => {
+        this.results = response.results;
+        this.timestamp = response.timestamp;
+      },
+      (error) => {
+        console.error('Error searching live presentations', error);
+      }
+    );
   }
+
 
   createLivePresentation() {
     if (this.createForm.valid) {
