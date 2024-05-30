@@ -47,11 +47,15 @@
           <p>Search Timestamp: {{ timestamp }}</p>
           <ul>
             <li *ngFor="let presentation of results">
-              {{ presentation.title }} by {{ presentation.presenter }} at {{ presentation.dateTime | date:'medium' }}
+              <strong>{{ presentation.title }}</strong> by {{ presentation.presenter }} at {{ presentation.dateTime | date:'medium' }}
+              <p>{{ presentation.description }}</p>
               <button (click)="selectPresentation(presentation)">Edit</button>
               <button (click)="deleteLivePresentation(presentation.id)">Delete</button>
             </li>
           </ul>
+        </div>
+        <div *ngIf="results && results.length === 0" class="text-warning">
+          No results found.
         </div>
       </form>
       <br>
@@ -97,6 +101,8 @@
       </form>
 
       <br>
+
+
 
 
 

@@ -104,7 +104,6 @@ export class AppComponent implements OnInit {
     );
   }
 
-
   createLivePresentation() {
     if (this.createForm.valid) {
       const newPresentation = this.createForm.value;
@@ -140,14 +139,17 @@ export class AppComponent implements OnInit {
   }
 
   deleteLivePresentation(id: number) {
-    this.livePresentationService.deleteLivePresentation(id).subscribe(
-      () => {
-        this.results = this.results.filter(p => p.id !== id);
-      },
-      (error) => {
-        console.error('Error deleting live presentation', error);
-      }
-    );
+    if (confirm('Are you sure you want to delete this presentation?')) {
+      this.livePresentationService.deleteLivePresentation(id).subscribe(
+        () => {
+          this.results = this.results.filter(p => p.id !== id);
+          alert('Presentation deleted successfully.');
+        },
+        (error) => {
+          console.error('Error deleting live presentation', error);
+        }
+      );
+    }
   }
 
   selectPresentation(presentation: LivePresentation) {

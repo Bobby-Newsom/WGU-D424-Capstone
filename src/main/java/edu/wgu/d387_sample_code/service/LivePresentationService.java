@@ -14,6 +14,8 @@ public class LivePresentationService {
 
     @Autowired
     private LivePresentationRepository repository;
+    @Autowired
+    private LivePresentationRepository livePresentationRepository;
 
     public LivePresentation createLivePresentation(LivePresentation livePresentation) {
         return repository.save(livePresentation);
@@ -21,6 +23,10 @@ public class LivePresentationService {
 
     public Optional<LivePresentation> getLivePresentationById(Long id) {
         return repository.findById(id);
+    }
+
+    public Optional<LivePresentation> getNextLivePresentation() {
+        return livePresentationRepository.findFirstByDateTimeAfterOrderByDateTimeAsc(LocalDateTime.now());
     }
 
     public LivePresentation updateLivePresentation(Long id, LivePresentation updatedLivePresentation) {
