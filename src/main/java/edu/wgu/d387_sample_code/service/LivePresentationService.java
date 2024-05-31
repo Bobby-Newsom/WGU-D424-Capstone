@@ -16,6 +16,9 @@ public class LivePresentationService {
     private LivePresentationRepository repository;
     @Autowired
     private LivePresentationRepository livePresentationRepository;
+    public List<LivePresentation> searchLivePresentations(String query) {
+        return livePresentationRepository.searchLivePresentations(query);
+    }
 
     public LivePresentation createLivePresentation(LivePresentation livePresentation) {
         return repository.save(livePresentation);

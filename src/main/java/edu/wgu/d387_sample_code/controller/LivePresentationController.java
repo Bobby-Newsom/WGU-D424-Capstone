@@ -45,7 +45,7 @@ public class LivePresentationController {
 
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchLivePresentations(@RequestParam String query) {
-        List<LivePresentation> results = service.searchByTitle(query);
+        List<LivePresentation> results = service.searchLivePresentations(query);
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("results", results);
