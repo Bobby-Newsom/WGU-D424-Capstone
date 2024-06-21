@@ -1,34 +1,44 @@
-# Use the official Maven image to build the app
+# Use an official Maven image to build the application
 FROM maven:3.8.4-openjdk-17-slim AS build
 
-# Install Node.js v18.x and Angular CLI
-RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g @angular/cli
-
-# Set the working directory to /app
+# Set the working directory
 WORKDIR /app
 
-# Copy the pom.xml file and the src directory
+# Copy the pom.xml and download the dependencies
 COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the source code
 COPY src ./src
 
-# Run the Maven build
+# Install Node.js, npm, and Angular CLI
+RUN apt-get update && apt-get install -y curl \
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g @angular/cli
+
+# Copy the Angular project and install dependencies
+COPY src/main/UI/package.json ./src/main/UI/package.json
+COPY src/main/UI/package-lock.json ./src/main/UI/package-lock.json
+RUN cd src/main/UI && npm install
+
+# Build the Angular project
+RUN cd src/main/UI && ng build --prod
+
+# Package the Spring Boot application
 RUN mvn clean package -DskipTests -e -X
 
-# Use the official OpenJDK image to run the app
+# Use an official OpenJDK image to run the application
 FROM openjdk:17-jdk-slim
 
-# Set the working directory to /app
+# Set the working directory
 WORKDIR /app
 
-# Copy the JAR file from the build stage to the run stage
-COPY --from=build /app/target/D387_sample_code-0.0.2-SNAPSHOT.jar /app/app.jar
+# Copy the built application from the build stage
+COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080
+# Expose the application port
 EXPOSE 8080
 
-# Set the entry point to run the JAR file
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
