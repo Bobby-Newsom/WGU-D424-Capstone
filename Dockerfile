@@ -1,10 +1,10 @@
 # Use the official Maven image to build the app
 FROM maven:3.8.4-openjdk-17-slim AS build
 
-# Install Node.js and Angular CLI
+# Install Node.js v18.x and Angular CLI
 RUN apt-get update && \
     apt-get install -y curl && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g @angular/cli
 
