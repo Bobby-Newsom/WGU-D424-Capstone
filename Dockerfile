@@ -23,7 +23,7 @@ COPY src/main/UI/package-lock.json ./src/main/UI/package-lock.json
 RUN cd src/main/UI && npm install
 
 # Build the Angular project
-RUN cd src/main/UI && ng build --prod
+RUN cd src/main/UI && ng build --configuration=production
 
 # Package the Spring Boot application
 RUN mvn clean package -DskipTests -e -X
