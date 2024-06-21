@@ -16,7 +16,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Run the Maven build
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -e -x
 
 # Use the official OpenJDK image to run the app
 FROM openjdk:17-jdk-slim
