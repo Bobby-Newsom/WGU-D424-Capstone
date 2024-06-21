@@ -1,28 +1,34 @@
-# Use an official Maven image to build the application
+# Use the official Maven image to build the app
 FROM maven:3.8.4-openjdk-17-slim AS build
 
-# Set the working directory inside the container
+# Install Node.js and Angular CLI
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g @angular/cli
+
+# Set the working directory to /app
 WORKDIR /app
 
-# Copy the pom.xml file and download dependencies
+# Copy the pom.xml file and the src directory
 COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copy the source code and build the application
 COPY src ./src
+
+# Run the Maven build
 RUN mvn clean package -DskipTests
 
-# Use a smaller base image for running the application
-FROM openjdk:17-slim
+# Use the official OpenJDK image to run the app
+FROM openjdk:17-jdk-slim
 
-# Set the working directory inside the container
+# Set the working directory to /app
 WORKDIR /app
 
-# Copy the JAR file from the build stage
+# Copy the JAR file from the build stage to the run stage
 COPY --from=build /app/target/D387_sample_code-0.0.2-SNAPSHOT.jar /app/app.jar
 
-# Expose the port the application runs on
+# Expose port 8080
 EXPOSE 8080
 
-# Run the application
+# Set the entry point to run the JAR file
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
