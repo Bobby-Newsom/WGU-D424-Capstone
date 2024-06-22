@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LivePresentation } from '../models/live-presentation.model';
+import { environment } from '../../environments/environment'; // Import the environment configuration
 
 @Injectable({
   providedIn: 'root'
 })
 export class LivePresentationService {
-  private apiUrl = 'http://localhost:8080/api/live-presentations';
+  private apiUrl = `${environment.apiUrl}/live-presentations`;
 
   constructor(private http: HttpClient) {}
 
