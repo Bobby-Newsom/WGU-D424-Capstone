@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "https://d424-software-engineering-capstone-5rih.onrender.com")
 @RequestMapping("/api/live-presentations")
 public class LivePresentationController {
 

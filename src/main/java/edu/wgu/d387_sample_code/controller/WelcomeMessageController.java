@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Locale;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://d424-software-engineering-capstone-5rih.onrender.com")
 @RequestMapping("/api")
 public class WelcomeMessageController {
     @GetMapping("/welcome/en")
