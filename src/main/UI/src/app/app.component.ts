@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LivePresentationService } from './services/live-presentation.service';
 import { LivePresentation } from './models/live-presentation.model';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +39,7 @@ export class AppComponent implements OnInit {
 
   constructor(private httpClient: HttpClient, private livePresentationService: LivePresentationService) {}
 
-  private baseURL: string = 'http://localhost:8080';
+  private baseURL: string = environment.apiUrl;
   private getUrl: string = this.baseURL + '/room/reservation/v1/';
   private postUrl: string = this.baseURL + '/room/reservation/v1';
   public submitted!: boolean;
