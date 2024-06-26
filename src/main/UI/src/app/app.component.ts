@@ -50,9 +50,9 @@ export class AppComponent implements OnInit {
   currentCheckOutVal!: string;
 
   ngOnInit() {
-    this.englishMessage$ = this.httpClient.get(this.baseURL + '/api/welcome/en/', { responseType: 'text' });
-    this.frenchMessage$ = this.httpClient.get(this.baseURL + '/api/welcome/fr/', { responseType: 'text' });
-    this.presentationAnnouncement$ = this.httpClient.get(this.baseURL + '/api/presentation/', { responseType: 'text' });
+    this.englishMessage$ = this.httpClient.get(this.baseURL + '/welcome/en', { responseType: 'text' });
+    this.frenchMessage$ = this.httpClient.get(this.baseURL + '/welcome/fr', { responseType: 'text' });
+    this.presentationAnnouncement$ = this.httpClient.get(this.baseURL + '/presentation', { responseType: 'text' });
 
     this.roomsearch = new FormGroup({
       checkin: new FormControl(' '),

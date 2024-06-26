@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://d424-software-engineering-capstone-5rih.onrender.com'
+  apiUrl: 'https://d424-software-engineering-capstone-5rih.onrender.com/api'
 };
 
 
