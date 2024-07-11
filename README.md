@@ -1,4 +1,6 @@
-**DO NOT DISTRIBUTE OR PUBLICLY POST SOLUTIONS TO THESE LABS. MAKE ALL FORKS OF THIS REPOSITORY WITH SOLUTION CODE PRIVATE. PLEASE REFER TO THE STUDENT CODE OF CONDUCT AND ETHICAL EXPECTATIONS FOR COLLEGE OF INFORMATION TECHNOLOGY STUDENTS FOR SPECIFICS. **
+Hello! This is my passed capstone project for the Java track of D424 at WGU. In this application, the Enhanced Landon Hotel Application, support has been added for depoloyment using Render! Render makes deployment incredibly simply by allowing depoloyment straight from linked GitHub and GitLab accounts making corrections and deployment and testing very easy.
+
+My Landon Hotel App included added support for Live Presentations allowing users CRUD support in addition to generating timestamped search reports. 
 
 WESTERN GOVERNOR UNIVERSITY
 
